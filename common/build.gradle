@@ -1,0 +1,7 @@
+description = 'common'
+dependencies {
+  compile rootProject.ext.dependencies["guava"]
+  compile rootProject.ext.dependencies["commons-lang3"]
+  compile rootProject.ext.dependencies["commons-collections4"]
+  compile rootProject.ext.dependencies["logback-classic"]
+}

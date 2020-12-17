@@ -1,0 +1,10 @@
+description = 'rpc'
+dependencies {
+  compile group: 'io.netty', name: 'netty-all', version: '4.1.55.Final'
+  compile rootProject.ext.dependencies["guava"]
+  compile rootProject.ext.dependencies["commons-lang3"]
+  compile rootProject.ext.dependencies["commons-collections4"]
+  compile rootProject.ext.dependencies["logback-classic"]
+
+  compile project(':common')
+}

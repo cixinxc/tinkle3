@@ -1,0 +1,4 @@
+rootProject.name = 'tinkle'
+include ':common'
+include ':rpc'
+
