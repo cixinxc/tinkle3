@@ -1,4 +1,4 @@
-package cn.cixinxc.tinkle.common.instance;
+package cn.cixinxc.tinkle.common.enums;
 
 /**
  * @author Cui Xinxin

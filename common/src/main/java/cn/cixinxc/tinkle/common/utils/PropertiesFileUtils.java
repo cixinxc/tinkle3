@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Cui Xinxin
@@ -17,8 +19,16 @@ import java.util.Properties;
 public class PropertiesFileUtils {
 
   private static final Logger logger = LoggerFactory.getLogger(PropertiesFileUtils.class);
+  private static final String FILE_NAME = "application.properties";
+
+  public static final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>(128);
+
 
   public static Properties parsePropertiesFile(String fileName) {
+    return propertiesMap.getOrDefault(fileName, parseFile(fileName));
+  }
+
+  private static Properties parseFile(String fileName) {
     var configFilePath = FileUtils.readFile(fileName);
     if (StringUtils.isBlank(configFilePath)) {
       return null;
@@ -26,11 +36,21 @@ public class PropertiesFileUtils {
     try (var inputStreamReader = new InputStreamReader(new FileInputStream(configFilePath), StandardCharsets.UTF_8)) {
       var properties = new Properties();
       properties.load(inputStreamReader);
+      propertiesMap.put(fileName, properties);
       return properties;
     } catch (IOException e) {
       logger.error("read properties from [{}] exception.", fileName, e);
       return null;
     }
+  }
+
+  public static String getValue(String key) {
+    return getValue(key, "");
+  }
+
+  public static String getValue(String key, String defaultValue) {
+    var properties = parsePropertiesFile(FILE_NAME);
+    return properties == null ? defaultValue : properties.getProperty(key);
   }
 
 }

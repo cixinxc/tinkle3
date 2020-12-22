@@ -42,11 +42,16 @@ public class Request implements Serializable {
     return Objects.isNull(invokeProperties) ? null : invokeProperties.getMethodName();
   }
 
-  public Class<?>[]  getParamTypes(){
+  public Class<?>[] getParamTypes() {
     return Objects.isNull(invokeProperties) ? null : invokeProperties.getParamTypes();
   }
 
-  public Object[] getParameters(){
+  public Object[] getParameters() {
     return Objects.isNull(invokeProperties) ? null : invokeProperties.getParameters();
+  }
+
+  @Override
+  public String toString() {
+    return "";
   }
 }

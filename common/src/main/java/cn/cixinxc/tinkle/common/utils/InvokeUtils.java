@@ -1,6 +1,8 @@
 package cn.cixinxc.tinkle.common.utils;
 
 import cn.cixinxc.tinkle.common.model.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
@@ -10,17 +12,26 @@ import java.util.Objects;
  * @createDate 2020/12/18
  */
 public class InvokeUtils {
-  public static Object invokeTargetMethod(Request request, Object service) {
+
+  private static final Logger logger = LoggerFactory.getLogger(InvokeUtils.class);
+
+  /**
+   * reflect invoke target method
+   *
+   * @param target target
+   * @param
+   */
+  public static Object invokeTargetMethod(Object target, Request request) {
     if (Objects.isNull(request)
             || Objects.isNull(request.getMethodName())
             || Objects.isNull(request.getParamTypes())) {
       return null;
     }
     try {
-      var method = service.getClass().getMethod(request.getMethodName(), request.getParamTypes());
-      return method.invoke(service, request.getParameters());
+      var method = target.getClass().getMethod(request.getMethodName(), request.getParamTypes());
+      return method.invoke(target, request.getParameters());
     } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-
+      logger.error("invoke target method failed. target:{}, request:{}.", target, request.toString());
     }
     return null;
   }

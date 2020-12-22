@@ -1,5 +1,6 @@
 package cn.cixinxc.tinkle.common.model;
 
+import cn.cixinxc.tinkle.common.annotation.Tinkle;
 import cn.cixinxc.tinkle.common.annotation.TinkleClient;
 
 public class ServiceProperties {
@@ -27,9 +28,15 @@ public class ServiceProperties {
     this.serviceName = serviceName;
   }
 
-  public ServiceProperties(TinkleClient tinkleClient, String serviceName) {
-    this.version = tinkleClient.version();
-    this.groupName = tinkleClient.group();
+  public ServiceProperties(TinkleClient annotation, String serviceName) {
+    this.version = annotation.version();
+    this.groupName = annotation.group();
+    this.serviceName = serviceName;
+  }
+
+  public ServiceProperties(Tinkle annotation, String serviceName) {
+    this.version = annotation.version();
+    this.groupName = annotation.group();
     this.serviceName = serviceName;
   }
 
@@ -56,7 +63,8 @@ public class ServiceProperties {
   /**
    * {serviceName}:{version}:{groupName}
    */
-  public String getServiceName() {
+  @Override
+  public String toString() {
     return serviceName + "" + version + "" + groupName;
   }
 

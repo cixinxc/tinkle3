@@ -5,10 +5,25 @@ import cn.cixinxc.tinkle.common.model.ServiceProperties;
 
 public interface ServiceProvider {
 
-  void addService(Object service, Class<?> serviceClass, ServiceProperties rpcServiceProperties);
+  /**
+   * add service
+   *
+   * @param service service object
+   */
+  boolean addService(Object service);
 
-  Object getService(ServiceProperties rpcServiceProperties);
+  /**
+   * get service
+   *
+   * @param properties service properties
+   */
+  Object getService(ServiceProperties properties);
 
-  void publishService(Object service, ServiceProperties rpcServiceProperties);
+  /**
+   * publish service
+   *
+   * @param service service object
+   */
+  boolean publishService(Object service);
 
 }

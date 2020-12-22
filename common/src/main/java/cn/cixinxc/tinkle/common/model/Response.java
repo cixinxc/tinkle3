@@ -1,6 +1,6 @@
 package cn.cixinxc.tinkle.common.model;
 
-import cn.cixinxc.tinkle.common.instance.ResponseStatusEnum;
+import cn.cixinxc.tinkle.common.enums.ResponseStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 
 /**
