@@ -2,7 +2,7 @@ package cn.cixinxc.tinkle.service;
 
 
 import cn.cixinxc.tinkle.common.annotation.Tinkle;
-import cn.cixinxc.tinkle.common.instance.TinkleCommonInstance;
+import cn.cixinxc.tinkle.common.instance.CommonConstants;
 import cn.cixinxc.tinkle.common.model.ServiceProperties;
 import cn.cixinxc.tinkle.register.RegisterService;
 import cn.cixinxc.tinkle.register.ZookeeperRegisterService;
@@ -73,7 +73,7 @@ public class ServiceProviderImpl implements ServiceProvider {
       return false;
     }
     this.addService(service);
-    return registerService.register(service, new InetSocketAddress(host, TinkleCommonInstance.TINKLE_RPC_PORT));
+    return registerService.register(service, new InetSocketAddress(host, CommonConstants.TINKLE_RPC_PORT));
   }
 
 }

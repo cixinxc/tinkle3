@@ -18,6 +18,9 @@ ext {
           // zk
           "curator-framework"   : "org.apache.curator:curator-framework:5.1.0",
           "curator-recipes"     : "org.apache.curator:curator-recipes:5.1.0",
+          // serialize
+          "protostuff-core"     : "io.protostuff:protostuff-core:1.7.2",
+          "protostuff-runtime"  : "io.protostuff:protostuff-runtime:1.7.2",
           // end
           "end"                 : "end",
   ]

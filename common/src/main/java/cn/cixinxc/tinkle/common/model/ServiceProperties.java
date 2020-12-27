@@ -60,6 +60,10 @@ public class ServiceProperties {
     this.serviceName = serviceName;
   }
 
+  public String getServiceName() {
+    return this.serviceName;
+  }
+
   /**
    * {serviceName}:{version}:{groupName}
    */
