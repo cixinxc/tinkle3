@@ -2,8 +2,11 @@ package cn.cixinxc.tinkle.common.model;
 
 import cn.cixinxc.tinkle.common.annotation.Tinkle;
 import cn.cixinxc.tinkle.common.annotation.TinkleClient;
+import cn.cixinxc.tinkle.common.utils.ObjectUtils;
 
 public class ServiceProperties {
+
+  public static ServiceProperties EMPTY_PROPERTIES = new ServiceProperties();
 
   /**
    * service version
@@ -40,6 +43,14 @@ public class ServiceProperties {
     this.serviceName = serviceName;
   }
 
+  public static ServiceProperties transToProperties(Object service) {
+    var annotation = service.getClass().getAnnotation(Tinkle.class);
+    if (annotation == null) {
+      return EMPTY_PROPERTIES;
+    }
+    return new ServiceProperties(ObjectUtils.getFirstInterfaceNames(service), annotation.version(), annotation.group());
+  }
+
   public String getVersion() {
     return version;
   }
@@ -56,12 +67,12 @@ public class ServiceProperties {
     this.groupName = groupName;
   }
 
-  public void setServiceName(String serviceName) {
-    this.serviceName = serviceName;
-  }
-
   public String getServiceName() {
     return this.serviceName;
+  }
+
+  public void setServiceName(String serviceName) {
+    this.serviceName = serviceName;
   }
 
   /**
@@ -69,7 +80,11 @@ public class ServiceProperties {
    */
   @Override
   public String toString() {
+    if (this == EMPTY_PROPERTIES) {
+      return "";
+    }
     return serviceName + "" + version + "" + groupName;
   }
+
 
 }

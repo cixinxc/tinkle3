@@ -4,6 +4,7 @@ import cn.cixinxc.tinkle.common.model.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ import java.util.Objects;
  */
 public class InvokeUtils {
 
-  private static final Logger logger = LoggerFactory.getLogger(InvokeUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * reflect invoke target method
@@ -31,7 +32,7 @@ public class InvokeUtils {
       var method = target.getClass().getMethod(request.getMethodName(), request.getParamTypes());
       return method.invoke(target, request.getParameters());
     } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      logger.error("invoke target method failed. target:{}, request:{}.", target, request.toString());
+      logger.error("invoke target method failed. target:{}, request:{}.", target, request.toString(), e);
     }
     return null;
   }

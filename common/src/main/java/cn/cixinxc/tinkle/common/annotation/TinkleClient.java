@@ -15,8 +15,8 @@ import java.lang.annotation.*;
 @Inherited
 public @interface TinkleClient {
 
-  String version() default "";
+  String version() default "0";
 
-  String group() default "";
+  String group() default "DEFAULT";
 
 }

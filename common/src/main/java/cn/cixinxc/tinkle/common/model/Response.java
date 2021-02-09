@@ -7,12 +7,12 @@ import org.apache.commons.lang3.StringUtils;
  * @author Cui Xinxin
  * @createDate 2020/12/17
  */
-public class Response<T> {
+public class Response {
   private static final long serialVersionUID = 715745410605631233L;
   private String requestId;
   private Integer code;
   private String info;
-  private T data;
+  private Object data;
 
   public Response() {
   }
@@ -23,11 +23,19 @@ public class Response<T> {
     this.info = StringUtils.isBlank(info) ? responseStatusEnum.getInfo() : info;
   }
 
-  public Response(String requestId, ResponseStatusEnum responseStatusEnum, T data) {
+  public Response(String requestId, ResponseStatusEnum responseStatusEnum, Object data) {
     this.requestId = requestId;
     this.code = responseStatusEnum.getCode();
     this.info = responseStatusEnum.getInfo();
     this.data = data;
+  }
+
+  public static Response success(String requestId, Object data) {
+    return new Response(requestId, ResponseStatusEnum.SUCCESS, data);
+  }
+
+  public static  Response fail(String requestId, String info) {
+    return new Response(requestId, ResponseStatusEnum.FAIL, info);
   }
 
   public String getRequestId() {
@@ -46,11 +54,11 @@ public class Response<T> {
     this.info = info;
   }
 
-  public T getData() {
+  public Object getData() {
     return data;
   }
 
-  public void setData(T data) {
+  public void setData(Object data) {
     this.data = data;
   }
 
@@ -60,14 +68,6 @@ public class Response<T> {
 
   public void setCode(Integer code) {
     this.code = code;
-  }
-
-  public static <T> Response<T> success(String requestId, T data) {
-    return new Response<T>(requestId, ResponseStatusEnum.SUCCESS, data);
-  }
-
-  public static <T> Response<T> fail(String requestId, String info) {
-    return new Response<>(requestId, ResponseStatusEnum.FAIL, info);
   }
 
 }

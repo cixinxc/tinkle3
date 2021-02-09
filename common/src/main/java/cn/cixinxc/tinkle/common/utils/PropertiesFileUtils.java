@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
@@ -18,11 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class PropertiesFileUtils {
 
-  private static final Logger logger = LoggerFactory.getLogger(PropertiesFileUtils.class);
-  private static final String FILE_NAME = "application.properties";
-
   public static final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>(128);
-
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final String FILE_NAME = "application.properties";
 
   public static Properties parsePropertiesFile(String fileName) {
     return propertiesMap.getOrDefault(fileName, parseFile(fileName));

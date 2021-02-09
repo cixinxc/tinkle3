@@ -1,15 +1,15 @@
-package cn.cixinxc.tinkle.netty.decoder;
+package cn.cixinxc.tinkle.decoder;
 
 import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
-import cn.cixinxc.tinkle.common.enums.MessageEnum;
+import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
 import cn.cixinxc.tinkle.common.instance.CommonConstants;
 import cn.cixinxc.tinkle.common.model.Message;
 import cn.cixinxc.tinkle.common.model.Request;
 import cn.cixinxc.tinkle.common.model.Response;
 import cn.cixinxc.tinkle.common.serialize.ProtostuffSerializer;
 import cn.cixinxc.tinkle.common.serialize.Serializer;
-import cn.cixinxc.tinkle.compress.Compress;
-import cn.cixinxc.tinkle.compress.GzipCompress;
+import cn.cixinxc.tinkle.compress.api.Compress;
+import cn.cixinxc.tinkle.compress.impl.GzipCompress;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -22,7 +22,6 @@ import java.util.Arrays;
  */
 public class MessageDecoder extends LengthFieldBasedFrameDecoder {
   public MessageDecoder() {
-
     this(8 * 1024 * 1024, 5, 4, -9, 0);
   }
 
@@ -35,8 +34,15 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
   protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
     byte[] bytes = new byte[in.readableBytes()];
     in.getBytes(in.readerIndex(), bytes);
-    Object decoded = super.decode(ctx, in);
-    if (decoded instanceof ByteBuf) {
+    String str = new String(bytes, 0, in.readableBytes());
+    Object decoded = null;
+    try {
+      decoded = super.decode(ctx, in);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    if (decoded != null && decoded instanceof ByteBuf) {
       ByteBuf frame = (ByteBuf) decoded;
       if (frame.readableBytes() >= 16) {
         try {
@@ -65,11 +71,11 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
     rpcMessage.setCodec(codecType);
     rpcMessage.setRequestId(requestId);
     rpcMessage.setType(messageType);
-    if (messageType == MessageEnum.PING.getByte()) {
+    if (messageType == MessageTypeEnum.PING.getType()) {
       rpcMessage.setData("PING");
       return rpcMessage;
     }
-    if (messageType == MessageEnum.PONG.getByte()) {
+    if (messageType == MessageTypeEnum.PONG.getType()) {
       rpcMessage.setData("pong");
       return rpcMessage;
     }
@@ -84,7 +90,7 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
       // deserialize the object
       Serializer serializer = new ProtostuffSerializer();
 
-      if (messageType == MessageEnum.REQUEST.getByte()) {
+      if (messageType == MessageTypeEnum.REQUEST.getType()) {
         Request tmpValue = serializer.deserialize(bs, Request.class);
         rpcMessage.setData(tmpValue);
       } else {

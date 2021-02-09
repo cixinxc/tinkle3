@@ -3,29 +3,25 @@ apply from: "config.gradle"
 def vcsVersion = 'NO_VCS_VERSION'
 
 buildscript {
-  repositories {
-    maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
-  }
-  dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21"
-  }
+    repositories {
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
+    }
 }
 
 allprojects {
-  apply plugin: 'maven'
 
-  if (!project.ext.has('stage') || !project.ext.stage) {
-    project.ext.stage = 'dev'
-  }
+    if (!project.ext.has('stage') || !project.ext.stage) {
+        project.ext.stage = 'dev'
+    }
 
-  project.ext.outputDirName = 'build-' + stage
-  project.ext.vcsRevision = vcsVersion
+    project.ext.outputDirName = 'build-' + stage
+    project.ext.vcsRevision = vcsVersion
 }
 
 subprojects {
-  if (file(project.projectDir.getPath()).toString().contains("common")
-          || file(project.projectDir.getPath()).toString().contains("tinkle")) {
-
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
@@ -35,10 +31,8 @@ subprojects {
     targetCompatibility = rootProject.ext.app["JDK"]
 
     repositories {
-      maven {
-        url rootProject.ext.repositories["ali-maven-center"]
-      }
+        maven {
+            url rootProject.ext.repositories["ali-maven-center"]
+        }
     }
-
-  }
 }

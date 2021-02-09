@@ -7,7 +7,8 @@ import cn.cixinxc.tinkle.common.utils.PropertiesFileUtils;
  * @createDate 2020/12/23
  */
 public class CommonConstants {
-  public static final int TINKLE_RPC_PORT = Integer.parseInt(PropertiesFileUtils.getValue("server.port", "6358"));
+  public static final int TINKLE_RPC_PORT = Integer.parseInt(PropertiesFileUtils.getValue("server.port", "9090"));
 
-  public static final byte[] MAGIC_NUMBER = {(byte) 'T', (byte) 'I', (byte) 'N', (byte) 'K', (byte) 'L', (byte) 'E'};
+  public static final byte[] MAGIC_NUMBER = {(byte) 'T', (byte) 'I', (byte) 'N', (byte) 'K'};
+
 }

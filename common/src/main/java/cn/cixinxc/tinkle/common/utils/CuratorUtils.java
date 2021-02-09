@@ -14,6 +14,7 @@ import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +29,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CuratorUtils {
 
-  private static final Logger logger = LoggerFactory.getLogger(CuratorUtils.class);
-
+  public static final String ZK_REGISTER_ROOT_PATH = PropertiesFileUtils.getValue("zookeeper.register.root.path", "/TINKLE");
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   // default setting
   private static final int SLEEP_MILL_SECONDS = 1000;
   private static final int RETRY_TIMES = 3;
-  public static final String ZK_REGISTER_ROOT_PATH = PropertiesFileUtils.getValue("zookeeper.register.root.path", "/TINKLE");
   private static final String DEFAULT_ZOOKEEPER_ADDRESS = PropertiesFileUtils.getValue("zookeeper.address", "127.0.0.1:2181");
 
   // local cache

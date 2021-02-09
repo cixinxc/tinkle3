@@ -1,4 +1,4 @@
-package cn.cixinxc.tinkle.register;
+package cn.cixinxc.tinkle.service.register;
 
 import cn.cixinxc.tinkle.common.model.ServiceProperties;
 

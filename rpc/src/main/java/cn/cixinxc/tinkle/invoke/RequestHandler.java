@@ -1,9 +1,12 @@
 package cn.cixinxc.tinkle.invoke;
 
 import cn.cixinxc.tinkle.common.model.Request;
-import cn.cixinxc.tinkle.service.ServiceProvider;
-import cn.cixinxc.tinkle.service.ServiceProviderImpl;
+import cn.cixinxc.tinkle.service.provider.ServiceProvider;
+import cn.cixinxc.tinkle.service.provider.ServiceProviderImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -12,32 +15,22 @@ import java.lang.reflect.Method;
  * @createDate 2020/12/27
  */
 public class RequestHandler {
+
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   private final static ServiceProvider serviceProvider = ServiceProviderImpl.getInstance();
 
-
-  /**
-   * Processing rpcRequest: call the corresponding method, and then return the method
-   */
   public static Object handle(Request request) {
-    Object service = serviceProvider.getService(request.getServiceProperties());
-    return invokeTargetMethod(request, service);
-  }
-
-  /**
-   * get method execution results
-   *
-   * @param request client request
-   * @param service service object
-   * @return the result of the target method execution
-   */
-  private static Object invokeTargetMethod(Request request, Object service) {
-    Object result = null;
+    var service = serviceProvider.getService(request.getServiceProperties());
+    if (service == null) {
+      return null;
+    }
     try {
       Method method = service.getClass().getMethod(request.getMethodName(), request.getParamTypes());
-      result = method.invoke(service, request.getParameters());
+      return method.invoke(service, request.getParameters());
     } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      return result;
+      logger.error("handle request error. request:{}.", request, e);
     }
-    return result;
+    return null;
   }
 }

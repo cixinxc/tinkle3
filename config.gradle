@@ -1,32 +1,36 @@
 ext {
-  app = [
-          "group"   : "cn.cixinxc.tinkle",
-          "version" : "0.0.1",
-          "JDK"     : "11",
-          "encoding": "UTF-8",
-          "end"     : "end"
-  ]
-  dependencies = [
-          // log
-          "logback-classic"     : "ch.qos.logback:logback-classic:1.2.3",
-          // base
-          "inject"              : "javax.inject:javax.inject:1",
-          "guava"               : "com.google.guava:guava:30.0-jre",
-          "gson"                : "com.google.code.gson:gson:2.8.6",
-          "commons-lang3"       : "org.apache.commons:commons-lang3:3.10",
-          "commons-collections4": "org.apache.commons:commons-collections4:4.4",
-          // zk
-          "curator-framework"   : "org.apache.curator:curator-framework:5.1.0",
-          "curator-recipes"     : "org.apache.curator:curator-recipes:5.1.0",
-          // serialize
-          "protostuff-core"     : "io.protostuff:protostuff-core:1.7.2",
-          "protostuff-runtime"  : "io.protostuff:protostuff-runtime:1.7.2",
-          // end
-          "end"                 : "end",
-  ]
+    app = [
+            "group"   : "cn.cixinxc.tinkle",
+            "version" : "0.0.1",
+            "JDK"     : "11",
+            "encoding": "UTF-8",
+            "end"     : "end"
+    ]
+    dependencies = [
+            // log
+            "logback-classic"     : "ch.qos.logback:logback-classic:1.2.3",
+            // base
+            "inject"              : "javax.inject:javax.inject:1",
+            "guava"               : "com.google.guava:guava:30.0-jre",
+            "gson"                : "com.google.code.gson:gson:2.8.6",
+            "commons-lang3"       : "org.apache.commons:commons-lang3:3.10",
+            "commons-collections4": "org.apache.commons:commons-collections4:4.4",
+            // netty
+            "netty-all":"io.netty:netty-all:4.1.55.Final",
+            // zk
+            "curator-framework"   : "org.apache.curator:curator-framework:5.1.0",
+            "curator-recipes"     : "org.apache.curator:curator-recipes:5.1.0",
+            // serialize
+            "protostuff-core"     : "io.protostuff:protostuff-core:1.7.2",
+            "protostuff-runtime"  : "io.protostuff:protostuff-runtime:1.7.2",
+            // spring
+            "spring-context"      : "org.springframework:spring-context:5.2.5.RELEASE",
+            // end
+            "end"                 : "end",
+    ]
 
-  repositories = [
-          "ali-maven-center": "http://maven.aliyun.com/nexus/content/groups/public/",
-          "end"             : "end"
-  ]
+    repositories = [
+            "ali-maven-center": "http://maven.aliyun.com/nexus/content/groups/public/",
+            "end"             : "end"
+    ]
 }

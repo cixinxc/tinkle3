@@ -1,0 +1,5 @@
+description = 'demo'
+dependencies {
+    compile project(':rpc')
+    compile project(':spring-support')
+}

@@ -1,4 +1,4 @@
-package cn.cixinxc.tinkle.service;
+package cn.cixinxc.tinkle.service.provider;
 
 
 import cn.cixinxc.tinkle.common.model.ServiceProperties;

@@ -1,17 +1,17 @@
 package cn.cixinxc.tinkle.netty.client;
 
 import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
-import cn.cixinxc.tinkle.common.enums.MessageEnum;
+import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
 import cn.cixinxc.tinkle.common.model.Message;
 import cn.cixinxc.tinkle.common.model.Request;
 import cn.cixinxc.tinkle.common.model.Response;
 import cn.cixinxc.tinkle.common.model.ServiceProperties;
-import cn.cixinxc.tinkle.netty.decoder.MessageDecoder;
-import cn.cixinxc.tinkle.netty.encoder.MessageEncoder;
-import cn.cixinxc.tinkle.register.RegisterService;
-import cn.cixinxc.tinkle.register.ZookeeperRegisterService;
-import cn.cixinxc.tinkle.service.ServiceProvider;
-import cn.cixinxc.tinkle.service.ServiceProviderImpl;
+import cn.cixinxc.tinkle.decoder.MessageDecoder;
+import cn.cixinxc.tinkle.encoder.MessageEncoder;
+import cn.cixinxc.tinkle.service.provider.ServiceProvider;
+import cn.cixinxc.tinkle.service.provider.ServiceProviderImpl;
+import cn.cixinxc.tinkle.service.register.RegisterService;
+import cn.cixinxc.tinkle.service.register.ZookeeperRegisterService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class NettyClient {
 
   private final RegisterService registerService;
-
+  private final UnprocessedRequests unprocessedRequests = new UnprocessedRequests();
   private final ServiceProvider serviceProvider;
   private final ChannelProvider channelProvider;
   private final Bootstrap bootstrap;
@@ -65,9 +65,9 @@ public class NettyClient {
     this.channelProvider = new ChannelProvider();
   }
 
-  public Object sendRpcRequest(Request rpcRequest) {
+  public CompletableFuture<Response> sendRpcRequest(Request rpcRequest) {
     // build return value
-    CompletableFuture<Response<Object>> resultFuture = new CompletableFuture<>();
+    CompletableFuture<Response> resultFuture = new CompletableFuture<>();
     // build rpc service name by rpcRequest
     ServiceProperties properties = rpcRequest.getServiceProperties();
     // get server address
@@ -76,19 +76,18 @@ public class NettyClient {
     Channel channel = getChannel(inetSocketAddress);
     if (channel.isActive()) {
       // put unprocessed request
-
+      unprocessedRequests.put(rpcRequest.getRequestId(), resultFuture);
       Message message = new Message();
       message.setData(rpcRequest);
 
       message.setCompress(CompressTypeEnum.GZIP.getCode());
-      message.setType(MessageEnum.REQUEST.getByte());
+      message.setType(MessageTypeEnum.REQUEST.getType());
       channel.writeAndFlush(message).addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
 
         } else {
           future.channel().close();
           resultFuture.completeExceptionally(future.cause());
-
         }
       });
     } else {
@@ -129,4 +128,6 @@ public class NettyClient {
     });
     return completableFuture.get();
   }
+
+
 }
