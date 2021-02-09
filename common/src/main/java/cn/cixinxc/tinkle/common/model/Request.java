@@ -39,19 +39,23 @@ public class Request implements Serializable {
   }
 
   public String getMethodName() {
-    return Objects.isNull(invokeProperties) ? null : invokeProperties.getMethodName();
+    return Objects.isNull(invokeProperties) ? "" : invokeProperties.getMethodName();
   }
 
   public Class<?>[] getParamTypes() {
-    return Objects.isNull(invokeProperties) ? null : invokeProperties.getParamTypes();
+    return Objects.isNull(invokeProperties) ? new Class[]{} : invokeProperties.getParamTypes();
   }
 
   public Object[] getParameters() {
-    return Objects.isNull(invokeProperties) ? null : invokeProperties.getParameters();
+    return Objects.isNull(invokeProperties) ? new Object[]{} : invokeProperties.getParameters();
   }
 
   @Override
   public String toString() {
     return "";
   }
+
+  public Request() {
+  }
+
 }

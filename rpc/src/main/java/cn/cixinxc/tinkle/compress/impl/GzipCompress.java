@@ -1,4 +1,6 @@
-package cn.cixinxc.tinkle.compress;
+package cn.cixinxc.tinkle.compress.impl;
+
+import cn.cixinxc.tinkle.compress.api.Compress;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,7 +14,6 @@ import java.util.zip.GZIPOutputStream;
  */
 public class GzipCompress implements Compress {
 
-
   private static final int BUFFER_SIZE = 1024 * 4;
 
   @Override
@@ -20,14 +21,14 @@ public class GzipCompress implements Compress {
     if (bytes == null) {
       throw new NullPointerException("bytes is null");
     }
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    try (GZIPOutputStream gzip = new GZIPOutputStream(out)) {
+    var out = new ByteArrayOutputStream();
+    try (var gzip = new GZIPOutputStream(out)) {
       gzip.write(bytes);
       gzip.flush();
       gzip.finish();
       return out.toByteArray();
     } catch (IOException e) {
-      throw new RuntimeException("gzip compress error", e);
+      throw new RuntimeException("gzip compress error.", e);
     }
   }
 
@@ -36,9 +37,8 @@ public class GzipCompress implements Compress {
     if (bytes == null) {
       throw new NullPointerException("bytes is null");
     }
-
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    try (GZIPInputStream gunzip = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
+    var out = new ByteArrayOutputStream();
+    try (var gunzip = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
       byte[] buffer = new byte[BUFFER_SIZE];
       int n;
       while ((n = gunzip.read(buffer)) > -1) {

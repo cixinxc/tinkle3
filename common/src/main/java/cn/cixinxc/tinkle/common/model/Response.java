@@ -30,6 +30,14 @@ public class Response<T> {
     this.data = data;
   }
 
+  public static <T> Response<T> success(String requestId, T data) {
+    return new Response<T>(requestId, ResponseStatusEnum.SUCCESS, data);
+  }
+
+  public static <T> Response<T> fail(String requestId, String info) {
+    return new Response<>(requestId, ResponseStatusEnum.FAIL, info);
+  }
+
   public String getRequestId() {
     return requestId;
   }
@@ -60,14 +68,6 @@ public class Response<T> {
 
   public void setCode(Integer code) {
     this.code = code;
-  }
-
-  public static <T> Response<T> success(String requestId, T data) {
-    return new Response<T>(requestId, ResponseStatusEnum.SUCCESS, data);
-  }
-
-  public static <T> Response<T> fail(String requestId, String info) {
-    return new Response<>(requestId, ResponseStatusEnum.FAIL, info);
   }
 
 }

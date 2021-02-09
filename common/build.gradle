@@ -1,12 +1,14 @@
 description = 'common'
 dependencies {
-  compile rootProject.ext.dependencies["guava"]
-  compile rootProject.ext.dependencies["commons-lang3"]
-  compile rootProject.ext.dependencies["commons-collections4"]
-  compile rootProject.ext.dependencies["logback-classic"]
-  compile rootProject.ext.dependencies["curator-framework"]
-  compile rootProject.ext.dependencies["curator-recipes"]
-  compile rootProject.ext.dependencies["gson"]
-  compile rootProject.ext.dependencies["protostuff-core"]
-  compile rootProject.ext.dependencies["protostuff-runtime"]
+    compile rootProject.ext.dependencies["guava"]
+    compile rootProject.ext.dependencies["commons-lang3"]
+    compile rootProject.ext.dependencies["commons-collections4"]
+    compile rootProject.ext.dependencies["logback-classic"]
+    compile rootProject.ext.dependencies["curator-framework"]
+    compile rootProject.ext.dependencies["curator-recipes"]
+    compile rootProject.ext.dependencies["gson"]
+    compile rootProject.ext.dependencies["protostuff-core"]
+    compile rootProject.ext.dependencies["protostuff-runtime"]
+    compile rootProject.ext.dependencies["protostuff-runtime"]
+    compile rootProject.ext.dependencies["spring-context"]
 }

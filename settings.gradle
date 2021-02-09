@@ -1,4 +1,6 @@
 rootProject.name = 'tinkle'
 include ':common'
 include ':rpc'
+include ':demo'
+include ':spring-support'
 

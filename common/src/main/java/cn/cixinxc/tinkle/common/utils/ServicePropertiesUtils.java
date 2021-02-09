@@ -1,7 +1,8 @@
 package cn.cixinxc.tinkle.common.utils;
 
-import cn.cixinxc.tinkle.common.annotation.Tinkle;
 import cn.cixinxc.tinkle.common.model.ServiceProperties;
+
+import java.util.Optional;
 
 /**
  * @author Cui Xinxin
@@ -13,11 +14,8 @@ public class ServicePropertiesUtils {
    *
    * @param service service object
    */
-  public static ServiceProperties getServiceProperties(Object service) {
-    var annotation = service.getClass().getAnnotation(Tinkle.class);
-    return annotation == null
-            ? new ServiceProperties()
-            : new ServiceProperties(annotation, service.getClass().getCanonicalName());
+  public static Optional<ServiceProperties> getServiceProperties(Object service) {
+    return Optional.ofNullable(ServiceProperties.transToProperties(service));
   }
 
   /**
@@ -26,6 +24,6 @@ public class ServicePropertiesUtils {
    * @param service service object
    */
   public static String getServiceRemotePath(Object service) {
-    return getServiceProperties(service).toString();
+    return getServiceProperties(service).orElseGet(() -> ServiceProperties.EMPTY_PROPERTIES).toString();
   }
 }

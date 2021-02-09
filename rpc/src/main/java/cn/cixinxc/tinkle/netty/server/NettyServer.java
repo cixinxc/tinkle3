@@ -1,9 +1,11 @@
 package cn.cixinxc.tinkle.netty.server;
 
-import cn.cixinxc.tinkle.netty.decoder.MessageDecoder;
-import cn.cixinxc.tinkle.netty.encoder.MessageEncoder;
-import cn.cixinxc.tinkle.service.ServiceProvider;
-import cn.cixinxc.tinkle.service.ServiceProviderImpl;
+import cn.cixinxc.tinkle.common.annotation.Tinkle;
+import cn.cixinxc.tinkle.common.utils.PropertiesFileUtils;
+import cn.cixinxc.tinkle.decoder.MessageDecoder;
+import cn.cixinxc.tinkle.encoder.MessageEncoder;
+import cn.cixinxc.tinkle.service.provider.ServiceProvider;
+import cn.cixinxc.tinkle.service.provider.ServiceProviderImpl;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -30,6 +32,10 @@ public class NettyServer {
   }
 
   public void start() {
+    String basePath = "cn.";
+    AnnotationSupport.loadAnnotationClass(PropertiesFileUtils.getValue("tinkleBasePath", basePath), Tinkle.class);
+    AnnotationSupport.INSTANCE_MAP.values().forEach(serviceProvider::publishService);
+
     CustomShutdownHook.getCustomShutdownHook().clearAll();
     String host = null;
     try {
@@ -47,7 +53,7 @@ public class NettyServer {
               .channel(NioServerSocketChannel.class)
               .childOption(ChannelOption.TCP_NODELAY, true)
               .childOption(ChannelOption.SO_KEEPALIVE, true)
-              .option(ChannelOption.SO_BACKLOG, 128)
+              .option(ChannelOption.SO_BACKLOG, 1024)
 //              .handler(new LoggingHandler(LogLevel.INFO))
               .childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
@@ -60,8 +66,8 @@ public class NettyServer {
                 }
               });
 
-      ChannelFuture f = b.bind(host, PORT).sync();
-      f.channel().closeFuture().sync();
+      ChannelFuture cf = b.bind(host, PORT).sync();
+      cf.channel().closeFuture().sync();
     } catch (InterruptedException e) {
 //      log.error("occur exception when start server:", e);
     } finally {

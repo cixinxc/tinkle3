@@ -12,6 +12,13 @@ public enum CompressTypeEnum {
   GZIP((byte) 1, "gzip"),
   ;
 
+  public static final Map<Byte, String> CODE_NAME_MAP;
+
+  static {
+    CODE_NAME_MAP = new HashMap<>(CompressTypeEnum.values().length);
+    Arrays.stream(CompressTypeEnum.values()).forEach(type -> CODE_NAME_MAP.put(type.code, type.name));
+  }
+
   private final byte code;
   private final String name;
 
@@ -20,22 +27,12 @@ public enum CompressTypeEnum {
     this.name = name;
   }
 
+  public static String getName(byte code) {
+    return CODE_NAME_MAP.get(code);
+  }
+
   public byte getCode() {
     return code;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public static final Map<Byte, String> CODE_NAME_MAP;
-
-  static {
-    CODE_NAME_MAP = new HashMap<>(CompressTypeEnum.values().length);
-    Arrays.stream(CompressTypeEnum.values()).forEach(type -> CODE_NAME_MAP.put(type.code, type.name));
-  }
-
-  public static String getName(byte code) {
-    return CODE_NAME_MAP.get(code);
-  }
 }

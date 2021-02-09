@@ -1,8 +1,9 @@
 package cn.cixinxc.tinkle.netty.client;
 
 import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
-import cn.cixinxc.tinkle.common.enums.MessageEnum;
+import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
 import cn.cixinxc.tinkle.common.model.Message;
+import cn.cixinxc.tinkle.common.model.Response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,7 +19,7 @@ import java.net.InetSocketAddress;
  * @createDate 2020/12/25
  */
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
-
+  private final UnprocessedRequests unprocessedRequests = new UnprocessedRequests();
   private final NettyClient nettyRpcClient;
 
   public NettyClientHandler() {
@@ -35,10 +36,11 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
       if (msg instanceof Message) {
         Message tmp = (Message) msg;
         byte messageType = tmp.getType();
-        if (messageType == MessageEnum.HEARTBEAT_RESPONSE.getByte()) {
+        if (messageType == MessageTypeEnum.HEARTBEAT_RESPONSE.getType()) {
 //                    log.info("heart [{}]", tmp.getData());
-        } else if (messageType == MessageEnum.RESPONSE.getByte()) {
-          Message<Object> rpcResponse = (Message<Object>) tmp.getData();
+        } else if (messageType == MessageTypeEnum.RESPONSE.getType()) {
+          Response<Object> rpcResponse = (Response<Object>) tmp.getData();
+          unprocessedRequests.complete(rpcResponse);
         }
       }
     } finally {
@@ -55,8 +57,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         Channel channel = nettyRpcClient.getChannel((InetSocketAddress) ctx.channel().remoteAddress());
         Message rpcMessage = new Message();
         rpcMessage.setCompress(CompressTypeEnum.GZIP.getCode());
-        rpcMessage.setType(MessageEnum.HEARTBEAT_REQUEST.getByte());
-        rpcMessage.setData(MessageEnum.PING);
+        rpcMessage.setType(MessageTypeEnum.HEARTBEAT_REQUEST.getType());
+        rpcMessage.setData(MessageTypeEnum.PING);
         channel.writeAndFlush(rpcMessage).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
       }
     } else {

@@ -18,11 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class PropertiesFileUtils {
 
+  public static final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>(128);
   private static final Logger logger = LoggerFactory.getLogger(PropertiesFileUtils.class);
   private static final String FILE_NAME = "application.properties";
-
-  public static final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>(128);
-
 
   public static Properties parsePropertiesFile(String fileName) {
     return propertiesMap.getOrDefault(fileName, parseFile(fileName));

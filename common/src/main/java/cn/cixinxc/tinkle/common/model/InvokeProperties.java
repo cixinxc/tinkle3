@@ -34,4 +34,7 @@ public class InvokeProperties implements Serializable {
     this.paramTypes = paramTypes;
   }
 
+  public InvokeProperties() {
+  }
+
 }

@@ -1,4 +1,4 @@
-package cn.cixinxc.tinkle.compress;
+package cn.cixinxc.tinkle.compress.api;
 
 /**
  * @author Cui Xinxin

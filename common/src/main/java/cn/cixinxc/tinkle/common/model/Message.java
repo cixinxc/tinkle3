@@ -1,18 +1,23 @@
 package cn.cixinxc.tinkle.common.model;
 
+import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
+
+import java.io.Serializable;
+
 /**
  * @author Cui Xinxin
  * @createDate 2020/12/24
  */
-public class Message<T> {
+public class Message implements Serializable {
+  private static final long serialVersionUID = -6772821163040259355L;
   /**
-   * @see cn.cixinxc.tinkle.common.enums.MessageEnum
+   * @see MessageTypeEnum
    */
   private byte type;
   private byte codec;
   private byte compress;
   private int requestId;
-  private T data;
+  private Object data;
 
   public Message() {
 
@@ -50,11 +55,11 @@ public class Message<T> {
     this.requestId = requestId;
   }
 
-  public T getData() {
+  public Object getData() {
     return data;
   }
 
-  public void setData(T data) {
+  public void setData(Object data) {
     this.data = data;
   }
 }

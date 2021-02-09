@@ -1,0 +1,7 @@
+description = 'spring-support'
+dependencies {
+    compile rootProject.ext.dependencies["spring-context"]
+
+    compile project(':common')
+    compile project(':rpc')
+}

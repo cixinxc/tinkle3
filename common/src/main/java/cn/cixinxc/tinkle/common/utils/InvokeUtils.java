@@ -31,7 +31,7 @@ public class InvokeUtils {
       var method = target.getClass().getMethod(request.getMethodName(), request.getParamTypes());
       return method.invoke(target, request.getParameters());
     } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      logger.error("invoke target method failed. target:{}, request:{}.", target, request.toString());
+      logger.error("invoke target method failed. target:{}, request:{}.", target, request.toString(), e);
     }
     return null;
   }

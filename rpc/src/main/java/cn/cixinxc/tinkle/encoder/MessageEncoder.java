@@ -1,13 +1,13 @@
-package cn.cixinxc.tinkle.netty.encoder;
+package cn.cixinxc.tinkle.encoder;
 
 import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
-import cn.cixinxc.tinkle.common.enums.MessageEnum;
+import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
 import cn.cixinxc.tinkle.common.instance.CommonConstants;
 import cn.cixinxc.tinkle.common.model.Message;
 import cn.cixinxc.tinkle.common.serialize.ProtostuffSerializer;
 import cn.cixinxc.tinkle.common.serialize.Serializer;
-import cn.cixinxc.tinkle.compress.Compress;
-import cn.cixinxc.tinkle.compress.GzipCompress;
+import cn.cixinxc.tinkle.compress.api.Compress;
+import cn.cixinxc.tinkle.compress.impl.GzipCompress;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -25,13 +25,14 @@ public class MessageEncoder extends MessageToByteEncoder<Message> {
   private static final Logger logger = LoggerFactory.getLogger(MessageEncoder.class);
 
   private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger(0);
-
+  public static final byte VERSION = 1;
   @Override
   protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
     byte messageType = msg.getType();
     try {
       out.writeBytes(CommonConstants.MAGIC_NUMBER);
-      out.writerIndex(out.writerIndex() + 6);
+      out.writeByte(VERSION);
+      out.writerIndex(out.writerIndex() + 4);
       out.writeByte(messageType);
       out.writeByte(msg.getCodec());
       out.writeByte(CompressTypeEnum.GZIP.getCode());
@@ -40,7 +41,7 @@ public class MessageEncoder extends MessageToByteEncoder<Message> {
       byte[] bodyBytes = null;
       int fullLength = 16;
       // if messageType is not heartbeat message,fullLength = head length + body length
-      if (messageType != MessageEnum.HEARTBEAT_REQUEST.getByte() && messageType != MessageEnum.HEARTBEAT_RESPONSE.getByte()) {
+      if (messageType != MessageTypeEnum.HEARTBEAT_REQUEST.getType() && messageType != MessageTypeEnum.HEARTBEAT_RESPONSE.getType()) {
         String codecName = CompressTypeEnum.getName(msg.getCodec());
         Serializer serializer = new ProtostuffSerializer();
         bodyBytes = serializer.serialize(msg.getData());
