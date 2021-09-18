@@ -2,7 +2,7 @@ package cn.cixinxc.tinkle.common.model;
 
 import java.io.Serializable;
 
-public class InvokeProperties implements Serializable {
+public class InvokeProperty implements Serializable {
 
   private static final long serialVersionUID = -4566056608889651858L;
 
@@ -34,7 +34,7 @@ public class InvokeProperties implements Serializable {
     this.paramTypes = paramTypes;
   }
 
-  public InvokeProperties() {
+  public InvokeProperty() {
   }
 
 }

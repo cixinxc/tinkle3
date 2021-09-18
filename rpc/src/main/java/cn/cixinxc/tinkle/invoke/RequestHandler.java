@@ -1,6 +1,6 @@
 package cn.cixinxc.tinkle.invoke;
 
-import cn.cixinxc.tinkle.common.model.Request;
+import cn.cixinxc.tinkle.common.model.RpcRequest;
 import cn.cixinxc.tinkle.service.provider.ServiceProvider;
 import cn.cixinxc.tinkle.service.provider.ServiceProviderImpl;
 import org.slf4j.Logger;
@@ -20,16 +20,16 @@ public class RequestHandler {
 
   private final static ServiceProvider serviceProvider = ServiceProviderImpl.getInstance();
 
-  public static Object handle(Request request) {
-    var service = serviceProvider.getService(request.getServiceProperties());
+  public static Object handle(RpcRequest rpcRequest) {
+    Object service = serviceProvider.getService(rpcRequest.getServiceProperties());
     if (service == null) {
       return null;
     }
     try {
-      Method method = service.getClass().getMethod(request.getMethodName(), request.getParamTypes());
-      return method.invoke(service, request.getParameters());
+      Method method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
+      return method.invoke(service, rpcRequest.getParameters());
     } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      logger.error("handle request error. request:{}.", request, e);
+      logger.error("handle request error. request:{}.", rpcRequest, e);
     }
     return null;
   }

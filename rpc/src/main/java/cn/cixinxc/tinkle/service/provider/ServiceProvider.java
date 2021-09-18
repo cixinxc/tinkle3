@@ -1,7 +1,7 @@
 package cn.cixinxc.tinkle.service.provider;
 
 
-import cn.cixinxc.tinkle.common.model.ServiceProperties;
+import cn.cixinxc.tinkle.common.model.ServiceProperty;
 
 public interface ServiceProvider {
 
@@ -17,7 +17,7 @@ public interface ServiceProvider {
    *
    * @param properties service properties
    */
-  Object getService(ServiceProperties properties);
+  Object getService(ServiceProperty properties);
 
   /**
    * publish service

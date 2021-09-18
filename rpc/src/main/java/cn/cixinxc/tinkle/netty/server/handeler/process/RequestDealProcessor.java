@@ -4,13 +4,11 @@ import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
 import cn.cixinxc.tinkle.common.model.Message;
 import cn.cixinxc.tinkle.invoke.RequestHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Cui Xinxin
  * @createDate 2021/1/21
  */
-@Component
 public interface RequestDealProcessor {
 
   byte getType();

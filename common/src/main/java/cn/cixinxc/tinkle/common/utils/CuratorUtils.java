@@ -1,5 +1,6 @@
 package cn.cixinxc.tinkle.common.utils;
 
+import cn.cixinxc.tinkle.common.constant.CommonConstants;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.apache.curator.framework.CuratorFramework;
@@ -29,12 +30,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CuratorUtils {
 
-  public static final String ZK_REGISTER_ROOT_PATH = PropertiesFileUtils.getValue("zookeeper.register.root.path", "/TINKLE");
+  public static final String ZK_REGISTER_ROOT_PATH = CommonConstants.ZK_REGISTER_ROOT_PATH;
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   // default setting
   private static final int SLEEP_MILL_SECONDS = 1000;
   private static final int RETRY_TIMES = 3;
-  private static final String DEFAULT_ZOOKEEPER_ADDRESS = PropertiesFileUtils.getValue("zookeeper.address", "127.0.0.1:2181");
+  private static final String DEFAULT_ZOOKEEPER_ADDRESS = CommonConstants.DEFAULT_ZOOKEEPER_ADDRESS;
 
   // local cache
   private static final Map<String, List<String>> SERVICE_ADDRESS_MAP = new ConcurrentHashMap<>();
@@ -53,7 +54,7 @@ public class CuratorUtils {
     if (CURATOR_INSTANCE != null && CURATOR_INSTANCE.getState() == CuratorFrameworkState.STARTED) {
       return CURATOR_INSTANCE;
     }
-    var retryPolicy = new ExponentialBackoffRetry(SLEEP_MILL_SECONDS, RETRY_TIMES);
+    ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(SLEEP_MILL_SECONDS, RETRY_TIMES);
     CURATOR_INSTANCE = CuratorFrameworkFactory.builder()
             .connectString(DEFAULT_ZOOKEEPER_ADDRESS)
             .retryPolicy(retryPolicy)
@@ -102,9 +103,9 @@ public class CuratorUtils {
     if (SERVICE_ADDRESS_MAP.containsKey(nodeName)) {
       return SERVICE_ADDRESS_MAP.get(nodeName);
     }
-    var servicePath = ZK_REGISTER_ROOT_PATH + "/" + nodeName;
+    String servicePath = ZK_REGISTER_ROOT_PATH + "/" + nodeName;
     try {
-      var nodes = framework.getChildren().forPath(servicePath);
+      List<String> nodes = framework.getChildren().forPath(servicePath);
       registerWatcher(framework, nodeName);
       return nodes;
     } catch (Exception e) {

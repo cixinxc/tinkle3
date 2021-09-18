@@ -1,8 +1,8 @@
 package cn.cixinxc.tinkle.service.provider;
 
 
-import cn.cixinxc.tinkle.common.instance.CommonConstants;
-import cn.cixinxc.tinkle.common.model.ServiceProperties;
+import cn.cixinxc.tinkle.common.constant.CommonConstants;
+import cn.cixinxc.tinkle.common.model.ServiceProperty;
 import cn.cixinxc.tinkle.common.utils.ObjectUtils;
 import cn.cixinxc.tinkle.service.register.RegisterService;
 import cn.cixinxc.tinkle.service.register.ZookeeperRegisterService;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static cn.cixinxc.tinkle.common.model.ServiceProperties.EMPTY_PROPERTIES;
+import static cn.cixinxc.tinkle.common.model.ServiceProperty.EMPTY_PROPERTY;
 
 
 public class ServiceProviderImpl implements ServiceProvider {
@@ -42,8 +42,8 @@ public class ServiceProviderImpl implements ServiceProvider {
 
   @Override
   public boolean addService(Object service) {
-    ServiceProperties properties = ServiceProperties.transToProperties(service);
-    if (properties == EMPTY_PROPERTIES) {
+    ServiceProperty properties = ServiceProperty.transToTinkleProperty(service);
+    if (properties == EMPTY_PROPERTY) {
       return false;
     }
     if (SERVICE_NAME_SET.contains(properties.toString())) {
@@ -54,8 +54,8 @@ public class ServiceProviderImpl implements ServiceProvider {
   }
 
   @Override
-  public Object getService(ServiceProperties serviceProperties) {
-    return SERVICE_MAP.get(serviceProperties.toString());
+  public Object getService(ServiceProperty serviceProperty) {
+    return SERVICE_MAP.get(serviceProperty.toString());
   }
 
   @Override

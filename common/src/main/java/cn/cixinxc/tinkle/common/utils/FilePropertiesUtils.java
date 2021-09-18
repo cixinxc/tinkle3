@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Cui Xinxin
  * @createDate 2020/12/17
  */
-public class PropertiesFileUtils {
+public class FilePropertiesUtils {
 
   public static final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>(128);
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -28,12 +28,12 @@ public class PropertiesFileUtils {
   }
 
   private static Properties parseFile(String fileName) {
-    var configFilePath = FileUtils.readFile(fileName);
+    String configFilePath = FileUtils.readFile(fileName);
     if (StringUtils.isBlank(configFilePath)) {
       return null;
     }
-    try (var inputStreamReader = new InputStreamReader(new FileInputStream(configFilePath), StandardCharsets.UTF_8)) {
-      var properties = new Properties();
+    try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configFilePath), StandardCharsets.UTF_8)) {
+      Properties properties = new Properties();
       properties.load(inputStreamReader);
       propertiesMap.put(fileName, properties);
       return properties;
@@ -48,7 +48,7 @@ public class PropertiesFileUtils {
   }
 
   public static String getValue(String key, String defaultValue) {
-    var properties = parsePropertiesFile(FILE_NAME);
+    Properties properties = parsePropertiesFile(FILE_NAME);
     return properties == null ? defaultValue : properties.getProperty(key);
   }
 

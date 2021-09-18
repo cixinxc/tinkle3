@@ -1,11 +1,12 @@
 package cn.cixinxc.tinkle.common.utils;
 
-import cn.cixinxc.tinkle.common.model.Request;
+import cn.cixinxc.tinkle.common.model.RpcRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -22,17 +23,17 @@ public class InvokeUtils {
    * @param target target
    * @param
    */
-  public static Object invokeTargetMethod(Object target, Request request) {
-    if (Objects.isNull(request)
-            || Objects.isNull(request.getMethodName())
-            || Objects.isNull(request.getParamTypes())) {
+  public static Object invokeTargetMethod(Object target, RpcRequest rpcRequest) {
+    if (Objects.isNull(rpcRequest)
+            || Objects.isNull(rpcRequest.getMethodName())
+            || Objects.isNull(rpcRequest.getParamTypes())) {
       return null;
     }
     try {
-      var method = target.getClass().getMethod(request.getMethodName(), request.getParamTypes());
-      return method.invoke(target, request.getParameters());
+      Method method = target.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
+      return method.invoke(target, rpcRequest.getParameters());
     } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
-      logger.error("invoke target method failed. target:{}, request:{}.", target, request.toString(), e);
+      logger.error("invoke target method failed. target:{}, request:{}.", target, rpcRequest.toString(), e);
     }
     return null;
   }

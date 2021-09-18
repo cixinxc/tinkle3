@@ -21,8 +21,8 @@ public class GzipCompress implements Compress {
     if (bytes == null) {
       throw new NullPointerException("bytes is null");
     }
-    var out = new ByteArrayOutputStream();
-    try (var gzip = new GZIPOutputStream(out)) {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    try (GZIPOutputStream gzip = new GZIPOutputStream(out)) {
       gzip.write(bytes);
       gzip.flush();
       gzip.finish();
@@ -37,8 +37,8 @@ public class GzipCompress implements Compress {
     if (bytes == null) {
       throw new NullPointerException("bytes is null");
     }
-    var out = new ByteArrayOutputStream();
-    try (var gunzip = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    try (GZIPInputStream gunzip = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
       byte[] buffer = new byte[BUFFER_SIZE];
       int n;
       while ((n = gunzip.read(buffer)) > -1) {

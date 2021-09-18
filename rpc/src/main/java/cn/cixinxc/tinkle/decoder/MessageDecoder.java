@@ -2,9 +2,9 @@ package cn.cixinxc.tinkle.decoder;
 
 import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
 import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
-import cn.cixinxc.tinkle.common.instance.CommonConstants;
+import cn.cixinxc.tinkle.common.constant.CommonConstants;
 import cn.cixinxc.tinkle.common.model.Message;
-import cn.cixinxc.tinkle.common.model.Request;
+import cn.cixinxc.tinkle.common.model.RpcRequest;
 import cn.cixinxc.tinkle.common.model.Response;
 import cn.cixinxc.tinkle.common.serialize.ProtostuffSerializer;
 import cn.cixinxc.tinkle.common.serialize.Serializer;
@@ -22,7 +22,7 @@ import java.util.Arrays;
  */
 public class MessageDecoder extends LengthFieldBasedFrameDecoder {
   public MessageDecoder() {
-    this(8 * 1024 * 1024, 5, 4, -9, 0);
+    this(2 << 23, 5, 4, -9, 0);
   }
 
   public MessageDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength,
@@ -34,7 +34,6 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
   protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
     byte[] bytes = new byte[in.readableBytes()];
     in.getBytes(in.readerIndex(), bytes);
-    String str = new String(bytes, 0, in.readableBytes());
     Object decoded = null;
     try {
       decoded = super.decode(ctx, in);
@@ -42,7 +41,7 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
       e.printStackTrace();
     }
 
-    if (decoded != null && decoded instanceof ByteBuf) {
+    if (decoded instanceof ByteBuf) {
       ByteBuf frame = (ByteBuf) decoded;
       if (frame.readableBytes() >= 16) {
         try {
@@ -91,7 +90,7 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
       Serializer serializer = new ProtostuffSerializer();
 
       if (messageType == MessageTypeEnum.REQUEST.getType()) {
-        Request tmpValue = serializer.deserialize(bs, Request.class);
+        RpcRequest tmpValue = serializer.deserialize(bs, RpcRequest.class);
         rpcMessage.setData(tmpValue);
       } else {
         Response tmpValue = serializer.deserialize(bs, Response.class);

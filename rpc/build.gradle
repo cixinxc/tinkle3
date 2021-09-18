@@ -1,10 +1,10 @@
 description = 'rpc'
 dependencies {
-    compile rootProject.ext.dependencies["netty-all"]
-    compile rootProject.ext.dependencies["guava"]
-    compile rootProject.ext.dependencies["commons-lang3"]
-    compile rootProject.ext.dependencies["commons-collections4"]
-    compile rootProject.ext.dependencies["logback-classic"]
-    compile group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    compile project(':common')
+  implementation rootProject.ext.dependencies["netty-all"]
+  implementation rootProject.ext.dependencies["guava"]
+  implementation rootProject.ext.dependencies["commons-lang3"]
+  implementation rootProject.ext.dependencies["commons-collections4"]
+  implementation rootProject.ext.dependencies["logback-classic"]
+  implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+  api project(':common')
 }

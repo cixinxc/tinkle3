@@ -1,6 +1,6 @@
 package cn.cixinxc.tinkle.service.register;
 
-import cn.cixinxc.tinkle.common.model.ServiceProperties;
+import cn.cixinxc.tinkle.common.model.ServiceProperty;
 
 import java.net.InetSocketAddress;
 
@@ -23,5 +23,5 @@ public interface RegisterService {
    *
    * @param properties service properties
    */
-  InetSocketAddress lookup(ServiceProperties properties);
+  InetSocketAddress lookup(ServiceProperty properties);
 }

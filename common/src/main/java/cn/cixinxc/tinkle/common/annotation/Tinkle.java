@@ -14,6 +14,8 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Inherited
 public @interface Tinkle {
+  
+  Class<?> interfaceClass() default void.class;
 
   String version() default "";
 

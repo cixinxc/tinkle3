@@ -11,7 +11,10 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.net.InetSocketAddress;
 
 /**
@@ -19,7 +22,9 @@ import java.net.InetSocketAddress;
  * @createDate 2020/12/25
  */
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
-  private final UnprocessedRequests unprocessedRequests = new UnprocessedRequests();
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private final UnprocessedRequest unprocessedRequest = new UnprocessedRequest();
   private final NettyClient nettyRpcClient;
 
   public NettyClientHandler() {
@@ -31,17 +36,22 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
    */
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    logger.info("client receive msg:[{}].", msg);
+    if (!(msg instanceof Message)) {
+      return;
+    }
     try {
-//            log.info("client receive msg: [{}]", msg);
-      if (msg instanceof Message) {
-        Message tmp = (Message) msg;
-        byte messageType = tmp.getType();
-        if (messageType == MessageTypeEnum.HEARTBEAT_RESPONSE.getType()) {
-//                    log.info("heart [{}]", tmp.getData());
-        } else if (messageType == MessageTypeEnum.RESPONSE.getType()) {
-          Response rpcResponse = (Response) tmp.getData();
-          unprocessedRequests.complete(rpcResponse);
-        }
+      Message message = (Message) msg;
+      MessageTypeEnum messageType = MessageTypeEnum.typeOf(message.getType());
+      switch (messageType) {
+        case HEARTBEAT_RESPONSE:
+          logger.info("heart [{}]", message.getData());
+          break;
+        case RESPONSE:
+          Response rpcResponse = (Response) message.getData();
+          unprocessedRequest.complete(rpcResponse);
+        default:
+          throw new IllegalStateException("Unexpected value: " + messageType);
       }
     } finally {
       ReferenceCountUtil.release(msg);

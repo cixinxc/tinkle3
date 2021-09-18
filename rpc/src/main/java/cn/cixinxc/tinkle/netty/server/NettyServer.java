@@ -1,7 +1,7 @@
 package cn.cixinxc.tinkle.netty.server;
 
 import cn.cixinxc.tinkle.common.annotation.Tinkle;
-import cn.cixinxc.tinkle.common.utils.PropertiesFileUtils;
+import cn.cixinxc.tinkle.common.utils.FilePropertiesUtils;
 import cn.cixinxc.tinkle.decoder.MessageDecoder;
 import cn.cixinxc.tinkle.encoder.MessageEncoder;
 import cn.cixinxc.tinkle.service.provider.ServiceProvider;
@@ -33,7 +33,7 @@ public class NettyServer {
 
   public void start() {
     String basePath = "cn.";
-    AnnotationSupport.loadAnnotationClass(PropertiesFileUtils.getValue("tinkleBasePath", basePath), Tinkle.class);
+    AnnotationSupport.loadAnnotationClass(FilePropertiesUtils.getValue("tinkleBasePath", basePath), Tinkle.class);
     AnnotationSupport.INSTANCE_MAP.values().forEach(serviceProvider::publishService);
 
     CustomShutdownHook.getCustomShutdownHook().clearAll();

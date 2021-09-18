@@ -1,6 +1,8 @@
 package cn.cixinxc.tinkle.common;
 
-import cn.cixinxc.tinkle.common.utils.PropertiesFileUtils;
+import cn.cixinxc.tinkle.common.utils.FilePropertiesUtils;
+
+import java.util.Properties;
 
 /**
  * @author Cui Xinxin
@@ -8,7 +10,7 @@ import cn.cixinxc.tinkle.common.utils.PropertiesFileUtils;
  */
 public class TestPropertiesFileUtils {
   public static void main(String[] args) {
-    var properties = PropertiesFileUtils.parsePropertiesFile("test.properties");
+    Properties properties = FilePropertiesUtils.parsePropertiesFile("test.properties");
     System.out.println(properties);
   }
 }

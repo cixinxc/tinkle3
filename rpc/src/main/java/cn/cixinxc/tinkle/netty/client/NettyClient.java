@@ -3,9 +3,8 @@ package cn.cixinxc.tinkle.netty.client;
 import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
 import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
 import cn.cixinxc.tinkle.common.model.Message;
-import cn.cixinxc.tinkle.common.model.Request;
 import cn.cixinxc.tinkle.common.model.Response;
-import cn.cixinxc.tinkle.common.model.ServiceProperties;
+import cn.cixinxc.tinkle.common.model.RpcRequest;
 import cn.cixinxc.tinkle.decoder.MessageDecoder;
 import cn.cixinxc.tinkle.encoder.MessageEncoder;
 import cn.cixinxc.tinkle.service.provider.ServiceProvider;
@@ -20,7 +19,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -32,8 +34,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class NettyClient {
 
+  private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   private final RegisterService registerService;
-  private final UnprocessedRequests unprocessedRequests = new UnprocessedRequests();
+  private final UnprocessedRequest unprocessedRequest = new UnprocessedRequest();
   private final ServiceProvider serviceProvider;
   private final ChannelProvider channelProvider;
   private final Bootstrap bootstrap;
@@ -65,49 +69,46 @@ public class NettyClient {
     this.channelProvider = new ChannelProvider();
   }
 
-  public CompletableFuture<Response> sendRpcRequest(Request rpcRequest) {
-    // build return value
+  public CompletableFuture<Response> sendRpcRequest(RpcRequest request) {
     CompletableFuture<Response> resultFuture = new CompletableFuture<>();
-    // build rpc service name by rpcRequest
-    ServiceProperties properties = rpcRequest.getServiceProperties();
-    // get server address
-    InetSocketAddress inetSocketAddress = registerService.lookup(properties);
-    // get  server address related channel
+
+    // get server provider address
+    InetSocketAddress inetSocketAddress = registerService.lookup(request.getServiceProperties());
+    // get server provider address related channel
     Channel channel = getChannel(inetSocketAddress);
-    if (channel.isActive()) {
-      // put unprocessed request
-      unprocessedRequests.put(rpcRequest.getRequestId(), resultFuture);
-      Message message = new Message();
-      message.setData(rpcRequest);
-
-      message.setCompress(CompressTypeEnum.GZIP.getCode());
-      message.setType(MessageTypeEnum.REQUEST.getType());
-      channel.writeAndFlush(message).addListener((ChannelFutureListener) future -> {
-        if (future.isSuccess()) {
-
-        } else {
-          future.channel().close();
-          resultFuture.completeExceptionally(future.cause());
-        }
-      });
-    } else {
+    if (!channel.isActive()) {
       throw new IllegalStateException();
     }
 
+    // put unprocessed request
+    unprocessedRequest.put(request.getRequestId(), resultFuture);
+
+    Message message = new Message();
+    message.setData(request);
+    message.setCompress(CompressTypeEnum.GZIP.getCode());
+    message.setType(MessageTypeEnum.REQUEST.getType());
+    channel.writeAndFlush(message).addListener((ChannelFutureListener) future -> {
+      if (future.isSuccess()) {
+        // todo
+      } else {
+        future.channel().close();
+        resultFuture.completeExceptionally(future.cause());
+      }
+    });
+
     return resultFuture;
   }
+
 
   public Channel getChannel(InetSocketAddress inetSocketAddress) {
     Channel channel = channelProvider.get(inetSocketAddress);
     if (channel == null) {
       try {
         channel = doConnect(inetSocketAddress);
-      } catch (ExecutionException e) {
-        e.printStackTrace();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+        channelProvider.set(inetSocketAddress, channel);
+      } catch (ExecutionException | InterruptedException e) {
+        logger.error("getChannel error.inetSocketAddress:{}.", inetSocketAddress, e);
       }
-      channelProvider.set(inetSocketAddress, channel);
     }
     return channel;
   }

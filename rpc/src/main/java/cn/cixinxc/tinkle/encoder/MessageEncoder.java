@@ -2,7 +2,7 @@ package cn.cixinxc.tinkle.encoder;
 
 import cn.cixinxc.tinkle.common.enums.CompressTypeEnum;
 import cn.cixinxc.tinkle.common.enums.MessageTypeEnum;
-import cn.cixinxc.tinkle.common.instance.CommonConstants;
+import cn.cixinxc.tinkle.common.constant.CommonConstants;
 import cn.cixinxc.tinkle.common.model.Message;
 import cn.cixinxc.tinkle.common.serialize.ProtostuffSerializer;
 import cn.cixinxc.tinkle.common.serialize.Serializer;

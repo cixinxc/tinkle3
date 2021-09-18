@@ -1,6 +1,6 @@
 package cn.cixinxc.tinkle.common.utils;
 
-import cn.cixinxc.tinkle.common.model.ServiceProperties;
+import cn.cixinxc.tinkle.common.model.ServiceProperty;
 
 import java.util.Optional;
 
@@ -14,8 +14,8 @@ public class ServicePropertiesUtils {
    *
    * @param service service object
    */
-  public static Optional<ServiceProperties> getServiceProperties(Object service) {
-    return Optional.ofNullable(ServiceProperties.transToProperties(service));
+  public static Optional<ServiceProperty> getServiceProperties(Object service) {
+    return Optional.ofNullable(ServiceProperty.transToTinkleProperty(service));
   }
 
   /**
@@ -24,6 +24,6 @@ public class ServicePropertiesUtils {
    * @param service service object
    */
   public static String getServiceRemotePath(Object service) {
-    return getServiceProperties(service).orElseGet(() -> ServiceProperties.EMPTY_PROPERTIES).toString();
+    return getServiceProperties(service).orElseGet(() -> ServiceProperty.EMPTY_PROPERTY).toString();
   }
 }

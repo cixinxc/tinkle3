@@ -3,12 +3,15 @@ package cn.cixinxc.tinkle.common.model;
 import cn.cixinxc.tinkle.common.enums.ResponseStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
+
 /**
  * @author Cui Xinxin
  * @createDate 2020/12/17
  */
-public class Response {
+public class Response implements Serializable {
   private static final long serialVersionUID = 715745410605631233L;
+
   private String requestId;
   private Integer code;
   private String info;
@@ -34,7 +37,7 @@ public class Response {
     return new Response(requestId, ResponseStatusEnum.SUCCESS, data);
   }
 
-  public static  Response fail(String requestId, String info) {
+  public static Response fail(String requestId, String info) {
     return new Response(requestId, ResponseStatusEnum.FAIL, info);
   }
 

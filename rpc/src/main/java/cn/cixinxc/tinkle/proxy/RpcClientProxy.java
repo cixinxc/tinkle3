@@ -1,10 +1,10 @@
 package cn.cixinxc.tinkle.proxy;
 
 
-import cn.cixinxc.tinkle.common.model.InvokeProperties;
-import cn.cixinxc.tinkle.common.model.Request;
+import cn.cixinxc.tinkle.common.model.InvokeProperty;
+import cn.cixinxc.tinkle.common.model.RpcRequest;
 import cn.cixinxc.tinkle.common.model.Response;
-import cn.cixinxc.tinkle.common.model.ServiceProperties;
+import cn.cixinxc.tinkle.common.model.ServiceProperty;
 import cn.cixinxc.tinkle.common.utils.Builder;
 import cn.cixinxc.tinkle.netty.client.NettyClient;
 import org.slf4j.Logger;
@@ -24,13 +24,13 @@ public class RpcClientProxy implements InvocationHandler {
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final NettyClient nettyClient;
-  private final ServiceProperties serviceProperties;
+  private final ServiceProperty serviceProperty;
 
-  public RpcClientProxy(NettyClient nettyClient, ServiceProperties serviceProperties) {
+  public RpcClientProxy(NettyClient nettyClient, ServiceProperty serviceProperty) {
     this.nettyClient = nettyClient;
-    serviceProperties.setGroupName(serviceProperties.getGroupName() == null ? "" : serviceProperties.getGroupName());
-    serviceProperties.setVersion(serviceProperties.getVersion() == null ? "" : serviceProperties.getVersion());
-    this.serviceProperties = serviceProperties;
+    serviceProperty.setGroupName(serviceProperty.getGroupName() == null ? "" : serviceProperty.getGroupName());
+    serviceProperty.setVersion(serviceProperty.getVersion() == null ? "" : serviceProperty.getVersion());
+    this.serviceProperty = serviceProperty;
   }
 
 
@@ -41,16 +41,16 @@ public class RpcClientProxy implements InvocationHandler {
 
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) {
-    var properties = Builder.of(InvokeProperties::new)
-            .with(InvokeProperties::setMethodName, method.getName())
-            .with(InvokeProperties::setParameters, args)
-            .with(InvokeProperties::setParamTypes, method.getParameterTypes())
+    InvokeProperty properties = Builder.of(InvokeProperty::new)
+            .with(InvokeProperty::setMethodName, method.getName())
+            .with(InvokeProperty::setParameters, args)
+            .with(InvokeProperty::setParamTypes, method.getParameterTypes())
             .build();
 
-    var rpcRequest = Builder.of(Request::new)
-            .with(Request::setRequestId, UUID.randomUUID().toString())
-            .with(Request::setServiceProperties, serviceProperties)
-            .with(Request::setInvokeProperties, properties)
+    RpcRequest rpcRequest = Builder.of(RpcRequest::new)
+            .with(RpcRequest::setRequestId, UUID.randomUUID().toString())
+            .with(RpcRequest::setServiceProperties, serviceProperty)
+            .with(RpcRequest::setInvokeProperties, properties)
             .build();
 
     Response rpcResponse = null;
@@ -64,16 +64,16 @@ public class RpcClientProxy implements InvocationHandler {
     return rpcResponse == null ? null : rpcResponse.getData();
   }
 
-  private void preCheck(Response response, Request request) {
+  private void preCheck(Response response, RpcRequest rpcRequest) {
     if (response == null) {
       logger.error("response is null.");
       return;
     }
-    if (request == null) {
+    if (rpcRequest == null) {
       logger.error("request is null.");
       return;
     }
-    if (request.getRequestId() != null && !request.getRequestId().equals(response.getRequestId())) {
+    if (rpcRequest.getRequestId() != null && !rpcRequest.getRequestId().equals(response.getRequestId())) {
       logger.error("request is not adapt response.");
     }
   }

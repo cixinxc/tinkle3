@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class UnprocessedRequests<T> {
+public class UnprocessedRequest {
   private static final Map<String, CompletableFuture<Response>> UNPROCESSED_RESPONSE_FUTURES = new ConcurrentHashMap<>();
 
   public void put(String requestId, CompletableFuture<Response> future) {

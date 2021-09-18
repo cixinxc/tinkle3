@@ -2,7 +2,7 @@ package cn.cixinxc.tinkle.spring.support;
 
 import cn.cixinxc.tinkle.common.annotation.Tinkle;
 import cn.cixinxc.tinkle.common.annotation.TinkleClient;
-import cn.cixinxc.tinkle.common.model.ServiceProperties;
+import cn.cixinxc.tinkle.common.model.ServiceProperty;
 import cn.cixinxc.tinkle.netty.client.NettyClient;
 import cn.cixinxc.tinkle.proxy.RpcClientProxy;
 import cn.cixinxc.tinkle.service.provider.ServiceProvider;
@@ -34,7 +34,7 @@ public class TinkleAnnotationPostProcessor implements BeanPostProcessor {
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-    // 服务发布
+    // 发布服务
     if (bean.getClass().getAnnotation(Tinkle.class) != null) {
       serviceProvider.publishService(bean);
     }
@@ -43,15 +43,15 @@ public class TinkleAnnotationPostProcessor implements BeanPostProcessor {
 
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    // 代理被@TinkleClient修饰的属性
+    // 代理被@TinkleClient修饰的bean
     Arrays.stream(bean.getClass().getDeclaredFields())
             .collect(Collectors.toMap(field -> field.getAnnotation(TinkleClient.class), Function.identity(), (k1, k2) -> k1))
             .forEach((annotation, field) -> {
               if (annotation == null) {
                 return;
               }
-              var serviceProperties = new ServiceProperties(annotation, field.getType().getCanonicalName());
-              var clientProxy = new RpcClientProxy(rpcClient, serviceProperties).getProxy(field.getType());
+              ServiceProperty serviceProperty = ServiceProperty.transToTinkleClientProperty(annotation, field.getType());
+              Object clientProxy = new RpcClientProxy(rpcClient, serviceProperty).getProxy(field.getType());
               field.setAccessible(true);
               try {
                 field.set(bean, clientProxy);
